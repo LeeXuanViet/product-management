@@ -58,6 +58,25 @@ module.exports.changeStatus = async (req, res) => {
 
   await Product.updateOne({ _id: id }, { status: status });
   
-  res.redirect("/admin/products");
-  // res.redirect("back");
+  const backURL = req.get("referer") || "/admin/products";
+  res.redirect(backURL);
+}
+
+// [PATCH] /admin/products/change-multi
+module.exports.changeMulti = async (req, res) => {
+  const type = req.body.type;
+  const ids = req.body.ids.split(", ");
+
+  switch(type) {
+    case "active":
+      await Product.updateMany({ _id: { $in: ids } }, { status: "active" });
+      break;
+    case "inactive":
+      await Product.updateMany({ _id: { $in: ids } }, { status: "inactive" });
+      break;
+    default:
+      break;
+  }
+  const backURL = req.get("referer") || "/admin/products";
+  res.redirect(backURL);
 }
