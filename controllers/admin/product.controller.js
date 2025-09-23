@@ -91,16 +91,14 @@ module.exports.changeMulti = async (req, res) => {
       for(const item of ids) {
         let [id, position] = item.split("-");
         position = parseInt(position);
+
         await Product.updateOne({ _id: id }, { 
           position: position 
         });
       }
       
-      // await Product.updateMany({ _id: { $in: ids } }, { 
-      //   deleted: true,
-      //   deletedAt: new Date()
-      // });
-      // break;
+      req.flash("success", `Đã đổi vị trí thành công ${ids.length} sản phẩm!`);
+      break;
 
     default:
       break;
@@ -118,7 +116,7 @@ module.exports.deleteItem = async (req, res) => {
     deleted: true,
     deletedAt: new Date()
   });
-  
+
   req.flash("success", `Đã xóa thành công sản phẩm!`);
 
   const backURL = req.get("referer") || "/admin/products";
